@@ -16,7 +16,7 @@ class StreamBinarySearcherTest extends TestCase
      */
     public function testSeekToLineStart(string $lineStart, bool $found, ?int $position): void
     {
-        $searcher = new StreamBinarySearcher();
+        $searcher = new StreamBinarySearcher(8);
         $stream = new StringStream(
 '
 a

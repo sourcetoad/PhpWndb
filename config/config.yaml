@@ -25,7 +25,9 @@ services:
                 - !php/enum PhpWndb\Dataset\Model\Index\SyntacticCategory::ADJECTIVE
                 - !php/enum PhpWndb\Dataset\Model\Index\SyntacticCategory::ADVERB
 
-    PhpWndb\Dataset\Storage\StreamBinarySearcher: ~
+    PhpWndb\Dataset\Storage\StreamBinarySearcher:
+        arguments:
+            $blockSize: 8192
 
     PhpWndb\Dataset\WordNet:
         public: true

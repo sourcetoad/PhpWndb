@@ -8,6 +8,11 @@ use InvalidArgumentException;
 
 class StreamBinarySearcher implements StreamSearcher
 {
+    public function __construct(
+        protected readonly int $blockSize,
+    ) {
+    }
+
     public function seekToLineStart(Stream $stream, string $lineStart): bool
     {
         if ($lineStart === '') {
@@ -21,70 +26,42 @@ class StreamBinarySearcher implements StreamSearcher
 
     protected function searchIn(Stream $stream, string $lineStart, int $start, int $end): bool
     {
-        $lineStartLength = \strlen($lineStart);
+        $needle = \PHP_EOL . $lineStart;
+        $needleLength = \strlen($needle);
+
         $distance = $end - $start;
-        if ($distance < $lineStartLength) {
+        $seekPosition = $distance <= $this->blockSize
+            ? $start
+            : $start + (int)\floor($distance / 2 - $this->blockSize / 2);
+
+        $stream->seek($seekPosition);
+        $data = $stream->read($this->blockSize);
+
+        $lineStartPosition = \strpos($data, $needle);
+        if ($lineStartPosition !== false) {
+            $stream->seek($seekPosition + $lineStartPosition + $needleLength);
+            return true;
+        }
+
+        if ($distance <= $this->blockSize) {
             return false;
         }
 
-        $half = $start + (int) \floor($distance / 2);
-        [$lineStartPosition, $line] = $this->findLine($stream, $half);
+        $firstLineData = \strstr($data, \PHP_EOL);
+        if ($firstLineData === false) {
+            throw new \RuntimeException('There is data block without new line. Probably too small block size.');
+        }
 
-        $lineEndPosition = $lineStartPosition + \strlen($line);
+        $startPosition = $seekPosition + \strlen($data) - \strlen($firstLineData);
+        $endPosition = $seekPosition + \strrpos($data, \PHP_EOL);
 
-        $cmp = \strncmp($line, $lineStart, $lineStartLength);
+        $cmp = \strncmp($firstLineData, $needle, $needleLength);
         if ($cmp > 0) {
-            return $lineStartPosition >= $start
-                && $this->searchIn($stream, $lineStart, $start, $lineStartPosition);
-        } else if ($cmp < 0) {
-            return $lineEndPosition < $end
-                && $this->searchIn($stream, $lineStart, $lineEndPosition, $end);
+            return $startPosition >= $start
+                && $this->searchIn($stream, $lineStart, $start, $startPosition);
         } else {
-            $stream->seek($lineStartPosition + $lineStartLength);
-            return true;
+            return $endPosition < $end
+                && $this->searchIn($stream, $lineStart, $endPosition, $end);
         }
-    }
-
-    /**
-     * @return array{0: int, 1: string}
-     */
-    protected function findLine(Stream $stream, int $position): array
-    {
-        $backPart = $this->readLineBackward($stream, $position);
-        $frontPart = $this->readLineForward($stream, $position);
-
-        return [$position - \strlen($backPart), $backPart . $frontPart];
-    }
-
-    protected function readLineForward(Stream $stream, int $position): string
-    {
-        $line = '';
-        $char = '';
-
-        $stream->seek($position);
-
-        do {
-            $line .= $char;
-            $char = $stream->read(1);
-        } while ($char !== '' && $char !== "\n");
-
-        return $line;
-    }
-
-    protected function readLineBackward(Stream $stream, int $position): string
-    {
-        $line = '';
-
-        for ($i = $position - 1; $i >= 0; --$i) {
-            $stream->seek($i);
-            $char = $stream->read(1);
-            if ($char === "\n") {
-                break;
-            }
-
-            $line = $char . $line;
-        }
-
-        return $line;
     }
 }
