@@ -8,7 +8,6 @@ class LemmaFactory
 {
     public function create(string $searchTerm): string
     {
-        // TODO
-        return \strtolower(\preg_replace('~[^a-z0-9]~i', '_', $searchTerm) ?? '');
+        return \strtolower(\str_replace(' ', '_', $searchTerm));
     }
 }
