@@ -9,6 +9,9 @@ use PhpWndb\Dataset\Model\Data\SynsetType;
 
 /**
  * @extends ArrayCrawler<SynsetCrawler>
+ *
+ * @method SynsetCrawler offsetGet(mixed $key)
+ * @method SynsetCrawler current()
  */
 class SynsetListCrawler extends ArrayCrawler
 {

@@ -12,6 +12,9 @@ use PhpWndb\Dataset\Search\Data\SynsetSearchEngine;
 
 /**
  * @extends ArrayCrawler<WordCrawler>
+ *
+ * @method WordCrawler offsetGet(mixed $key)
+ * @method WordCrawler current()
  */
 class SynsetCrawler extends ArrayCrawler
 {

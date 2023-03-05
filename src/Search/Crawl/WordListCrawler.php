@@ -6,6 +6,9 @@ namespace PhpWndb\Dataset\Search\Crawl;
 
 /**
  * @extends ArrayCrawler<WordCrawler>
+ *
+ * @method WordCrawler offsetGet(mixed $key)
+ * @method WordCrawler current()
  */
 class WordListCrawler extends ArrayCrawler
 {
