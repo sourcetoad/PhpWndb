@@ -14,6 +14,17 @@ The code needs PHP 8.1 or greater.
 composer require phpwndb/phpwndb
 ```
 
+### Basic usage
+
+```php
+$wordNet = (new PhpWndb\Dataset\WordNetProvider())->getWordNet();
+$synsets = $wordNet->search('word');
+
+foreach ($synsets as $synset) {
+    echo $synset->getGloss() . "\n";
+}
+```
+
 ## Running the tests
 
 ```
