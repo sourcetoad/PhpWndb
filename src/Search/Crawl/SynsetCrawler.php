@@ -8,6 +8,8 @@ use PhpWndb\Dataset\Model\Data\RelationPointer;
 use PhpWndb\Dataset\Model\Data\Synset;
 use PhpWndb\Dataset\Model\Data\SynsetType;
 use PhpWndb\Dataset\Model\RelationPointerType;
+use PhpWndb\Dataset\Model\SynsetId\SynsetId;
+use PhpWndb\Dataset\Model\SynsetId\SynsetIdFactory;
 use PhpWndb\Dataset\Search\Data\SynsetSearchEngine;
 
 /**
@@ -20,6 +22,7 @@ class SynsetCrawler extends ArrayCrawler
 {
     public function __construct(
         protected readonly Synset $synset,
+        protected readonly SynsetIdFactory $synsetIdFactory,
         protected readonly WordCrawlerFactory $wordCrawlerFactory,
         protected readonly SynsetListCrawlerFactory $synsetListCrawlerFactory,
         protected readonly SynsetSearchEngine $synsetSearchEngine,
@@ -40,6 +43,11 @@ class SynsetCrawler extends ArrayCrawler
         $synsets = $this->synsetSearchEngine->listByRelations($pointers);
 
         return $this->synsetListCrawlerFactory->createFromSynsets($synsets);
+    }
+
+    public function getSynsetId(): SynsetId
+    {
+        return $this->synsetIdFactory->createFromSynset($this->synset);
     }
 
     public function getType(): SynsetType

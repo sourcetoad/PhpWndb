@@ -6,6 +6,7 @@ namespace PhpWndb\Dataset\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PhpWndb\Dataset\Model\Data\SynsetType;
+use PhpWndb\Dataset\Model\Index\SyntacticCategory;
 use PhpWndb\Dataset\Model\RelationPointerType;
 use PhpWndb\Dataset\WordNetProvider;
 
@@ -28,6 +29,10 @@ class IntegrationTest extends TestCase
             'enjoying or showing or marked by joy or pleasure; "a happy smile"; "spent many happy days on the beach"; "a happy marriage"',
             $synset->getGloss(),
         );
+        self::assertSame(SynsetType::ADJECTIVE, $synset->getType());
+        self::assertSame(SyntacticCategory::ADJECTIVE, $synset->getSynsetId()->getSyntacticCategory());
+        self::assertSame(1151786, $synset->getSynsetId()->getSynsetOffset());
+        self::assertSame('aj1151786', $synset->getSynsetId()->toString());
         self::assertCount(1, $synset);
 
         $word = $synset->getFirst();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpWndb\Dataset\Search\Crawl;
 
 use PhpWndb\Dataset\Model\Data\Synset;
+use PhpWndb\Dataset\Model\SynsetId\SynsetIdFactory;
 use PhpWndb\Dataset\Search\Data\SynsetSearchEngine;
 
 class SynsetCrawlerFactory
@@ -12,6 +13,7 @@ class SynsetCrawlerFactory
     public function __construct(
         protected readonly WordCrawlerFactory $wordCrawlerFactory,
         protected readonly SynsetSearchEngine $synsetSearchEngine,
+        protected readonly SynsetIdFactory $synsetIdFactory,
     ) {
     }
 
@@ -31,6 +33,7 @@ class SynsetCrawlerFactory
     {
         return new SynsetCrawler(
             synset: $synset,
+            synsetIdFactory: $this->synsetIdFactory,
             wordCrawlerFactory: $this->wordCrawlerFactory,
             synsetListCrawlerFactory: $listCrawlerFactory,
             synsetSearchEngine: $this->synsetSearchEngine,
