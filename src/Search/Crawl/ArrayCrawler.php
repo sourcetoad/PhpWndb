@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PhpWndb\Dataset\Search\Crawl;
 
 use ArrayIterator;
-use Exception;
+use OutOfBoundsException;
 
 /**
- * @template TValue of mixed
- * @extends  ArrayIterator<int, TValue>
+ * @template TValue of object
+ * @extends ArrayIterator<int, TValue>
  */
 class ArrayCrawler extends ArrayIterator
 {
@@ -22,18 +22,20 @@ class ArrayCrawler extends ArrayIterator
     }
 
     /**
+     * @throws OutOfBoundsException
      * @return TValue
      */
     public function getFirst(): mixed
     {
-        return $this[0] ?? throw new Exception('There is no first item.');
+        return $this[0] ?? throw new OutOfBoundsException('There is no first item.');
     }
 
     /**
+     * @throws OutOfBoundsException
      * @return TValue
      */
     public function getLast(): mixed
     {
-        return $this[\count($this) - 1] ?? throw new Exception('There is no last item.');
+        return $this[\count($this) - 1] ?? throw new OutOfBoundsException('There is no last item.');
     }
 }
