@@ -11,21 +11,20 @@ jobs:
         timeout-minutes: 5
 
         steps:
-            -   uses: actions/checkout@v3.3.0
+            -   uses: actions/checkout@v4.1.6
             -   name: Composer cache
-                uses: actions/cache@v3
+                uses: actions/cache@v4
                 env:
                     cache-name: cache-composer
                 with:
                     path: ~/.cache/composer/
                     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./composer.json') }}
-                    restore-keys: |
-                        ${{ runner.os }}-build-${{ env.cache-name }}-
+                    restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}-
 
             -   name: Composer init
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.2'
                     coverage: none
                     tools: composer:v2
 
