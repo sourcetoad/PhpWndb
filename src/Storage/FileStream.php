@@ -54,8 +54,8 @@ class FileStream implements Stream
      */
     public function read(int $length): string
     {
-        if ($length < 0) {
-            throw new InvalidArgumentException('`length` has to be non-negative integer.');
+        if ($length <= 0) {
+            throw new InvalidArgumentException('`length` has to be non-negative & non-zero integer.');
         }
 
         $data = @\fread($this->resource, $length);
