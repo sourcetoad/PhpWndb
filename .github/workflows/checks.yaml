@@ -9,6 +9,10 @@ jobs:
     docker_tests:
         runs-on: ubuntu-22.04
         timeout-minutes: 5
+        strategy:
+            fail-fast: true
+            matrix:
+                php: [8.2, 8.3, 8.4]
 
         steps:
             -   uses: actions/checkout@v4
@@ -24,7 +28,7 @@ jobs:
             -   name: Composer init
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.2'
+                    php-version: ${{ matrix.php }}
                     coverage: none
                     tools: composer:v2
 
